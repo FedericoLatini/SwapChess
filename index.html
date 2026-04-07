@@ -23,6 +23,8 @@
         .btn-secondary { background-color: #2c2c2e; color: #ffffff; border: 1px solid #3a3a3c; }
         
         .stats { display: flex; justify-content: space-between; width: 100%; max-width: 400px; margin: 0 auto 25px auto; font-size: 1.1em; font-weight: 600; background: #1e1e1e; padding: 15px 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); border: 1px solid #2c2c2e; z-index: 10; position: relative;}
+        .score-box { display: flex; flex-direction: column; align-items: center; }
+        
         .game-area-wrapper { position: relative; width: 100%; max-width: 400px; margin: 0 auto; height: 450px; }
         
         #swipe-card { width: 100%; box-sizing: border-box; position: relative; background: #1e1e1e; border-radius: 12px; padding: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); border: 1px solid #2c2c2e; touch-action: none; cursor: grab; z-index: 10; }
@@ -54,8 +56,8 @@
 
     <div id="game-screen" class="screen">
         <div class="stats">
-            <div class="score-box"><div>SCORE</div><div id="score">0</div></div>
-            <div class="score-box"><div>BEST</div><div id="game-best-score">0</div></div>
+            <div class="score-box"><div style="font-size:0.7em; color:#888;">SCORE</div><div id="score">0</div></div>
+            <div class="score-box"><div style="font-size:0.7em; color:#888;">BEST</div><div id="game-best-score">0</div></div>
         </div>
         <div class="game-area-wrapper">
             <img id="white-king-icon" class="swipe-feedback-icon" src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg">
@@ -75,7 +77,7 @@
     <div id="game-over-screen" class="screen">
         <h1 style="color: #ff453a;">GAME OVER</h1>
         <div id="game-over-reason" style="margin-bottom:20px; font-weight:600;"></div>
-        <div style="background: #1e1e1e; padding: 25px; border-radius: 20px; margin-bottom: 25px; border: 1px solid #2c2c2e;">
+        <div style="background: #1e1e1e; padding: 25px; border-radius: 20px; margin-bottom: 25px; border: 1px solid #2c2c2e; width: 200px;">
             <div style="font-size: 0.7em; color: #888;">FINAL SCORE</div>
             <div id="final-score" style="font-size: 3em; font-weight: 800;">0</div>
         </div>
@@ -91,7 +93,6 @@
         let database = [], currentPosIndex = 0, score = 0, bestScore = parseInt(localStorage.getItem("swipeChessBestScore")) || 0;
         let board = null, isDragging = false, startX = 0, currentX = 0, isProcessingSwipe = false;
         
-        // Funzione professionale per mescolare l'array (Fisher-Yates Shuffle)
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -109,7 +110,6 @@
                 document.getElementById('start-btn').disabled = false;
             } catch (e) { 
                 document.getElementById('start-btn').innerText = "DB ERROR"; 
-                console.error(e);
             }
         }
 
@@ -127,8 +127,6 @@
 
         function startGame() {
             score = 0; currentPosIndex = 0; isProcessingSwipe = false;
-            
-            // Randomizzazione SICURA ad ogni nuova partita
             shuffleArray(database);
             
             document.getElementById('score').innerText = "0";
@@ -138,6 +136,7 @@
             document.getElementById('swipe-card').style.opacity = '1';
             updateBestScoreDisplays();
             switchScreen('game-screen');
+            
             setTimeout(() => {
                 if (!board) board = Chessboard('board', { position: 'start', pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
                 board.resize(); loadPosition();
@@ -159,7 +158,6 @@
             }
             const pos = database[currentPosIndex];
             
-            // Logica a prova di bomba per parsare la mossa (con o senza trattino)
             const cleanMove = pos.lastMove.replace('-', '').trim();
             const fromSq = cleanMove.substring(0, 2);
             const toSq = cleanMove.substring(2, 4);
@@ -168,18 +166,15 @@
             const game = new Chess(pos.fen);
             const moveResult = game.move({ from: fromSq, to: toSq, promotion: promo });
             
-            // Se la mossa è valida, mostra il FEN successivo, altrimenti mostra quello base
             if (moveResult) {
                 board.position(game.fen(), false);
             } else {
                 board.position(pos.fen, false);
-                console.warn("Mossa illegale nel DB per il FEN fornito:", pos.lastMove);
             }
             
             document.getElementById('last-move').innerHTML = `Last Move: <b>${fromSq}-${toSq}</b>`;
             document.getElementById('message').style.opacity = 0;
             
-            // Evidenzia caselle corrette
             $('.square-55d63').removeClass('highlight-move');
             $('.square-' + fromSq).addClass('highlight-move');
             $('.square-' + toSq).addClass('highlight-move');

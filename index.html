@@ -40,13 +40,15 @@
         #swipe-card { width: 100%; box-sizing: border-box; position: relative; background: #0c0d14; border-radius: 12px; padding: 15px; box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 0 1px #1a1c29; touch-action: none; cursor: grab; z-index: 10; }
         #board { width: 100%; border-radius: 4px; overflow: hidden; pointer-events: none; border: 2px solid #050508; }
         
-        /* ICONE SWIPE (FUCSIA/CIANO) */
+        /* FEEDBACK PURAMENTE SEMANTICO (BIANCO E NERO) */
         .swipe-feedback-icon { position: absolute; top: 40%; left: 50%; width: 140px; height: 140px; transform: translate(-50%, -50%) scale(0.5); opacity: 0; pointer-events: none; z-index: 100; }
-        #white-king-icon { filter: drop-shadow(0px 0px 30px #00e5ff); }
-        #black-king-icon { filter: drop-shadow(0px 0px 30px #ff00aa); }
+        #white-king-icon { filter: drop-shadow(0px 0px 30px rgba(255,255,255,1)); }
+        #black-king-icon { filter: drop-shadow(0px 0px 30px rgba(0,0,0,1)) drop-shadow(0px 0px 8px rgba(200, 0, 0, 0.5)); }
         
-        .badge { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 16px; border-radius: 20px; letter-spacing: 1px; background: #0c0d14; border: 1px solid #1a1c29; font-size: 0.8em; text-transform: uppercase; font-weight: 800;}
+        .badge { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 16px; border-radius: 20px; letter-spacing: 1px; font-size: 0.85em; text-transform: uppercase; font-weight: 800;}
         .badge svg { width: 16px; height: 16px; stroke-width: 3px; }
+        .badge-black { background: #111218; color: #8a8d9e; border: 1px solid #232533; }
+        .badge-white { background: #f0f0f0; color: #000; border: 1px solid #fff; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
         
         #message { height: 40px; margin-top: 15px; font-size: 1.6em; font-weight: 800; display: flex; align-items: center; justify-content: center; z-index: 10; letter-spacing: 1px; text-transform: uppercase; }
         .success { color: #00e5ff; text-shadow: 0 0 15px rgba(0, 229, 255, 0.6); } 
@@ -92,8 +94,8 @@
             <div id="swipe-card">
                 <div id="board"></div>
                 <div style="display:flex; justify-content:space-between; margin-top:15px;">
-                    <span class="badge" style="color: #ff00aa; border-color: rgba(255,0,170,0.3);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> BLACK</span>
-                    <span class="badge" style="color: #00e5ff; border-color: rgba(0,229,255,0.3);">WHITE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <span class="badge badge-black"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> BLACK</span>
+                    <span class="badge badge-white">WHITE <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
                 <div id="last-move" style="margin-top:10px; color:#555;">Last Move: -</div>
             </div>
@@ -304,7 +306,6 @@
             let solveTimeInSeconds = (Date.now() - puzzleStartTime) / 1000;
             
             if(guess === pos.correctAnswer) {
-                // Formula 30 secondi: punteggio massimo immediato, cala a 100 dopo 30s.
                 let speedBonus = Math.max(0, Math.round((30 - solveTimeInSeconds) * 15));
                 let pointsEarned = 100 + speedBonus;
                 

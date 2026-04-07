@@ -46,17 +46,38 @@
         .highlight-move { box-shadow: inset 0 0 0 50px rgba(0, 229, 255, 0.3) !important; }
         
         .points-floating { position: absolute; top: -35px; color: #39ff14; font-weight: 800; font-size: 1.4em; animation: floatUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; text-shadow: 0 0 10px rgba(57, 255, 20, 0.6); }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(0.5); } 20% { transform: translateY(-10px) scale(1.2); } 100% { opacity: 0; transform: translateY(-40px) scale(1); } }</style>
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(0.5); } 20% { transform: translateY(-10px) scale(1.2); } 100% { opacity: 0; transform: translateY(-40px) scale(1); } }
+
+        /* NUOVA ANIMAZIONE BRAG TEXT */
+        .brag-text { 
+            font-size: 0.85em; 
+            color: #00e5ff; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-bottom: 20px; 
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+            animation: pulseText 2s infinite; 
+        }
+        @keyframes pulseText { 
+            0% { opacity: 0.5; } 
+            50% { opacity: 1; transform: scale(1.02); } 
+            100% { opacity: 0.5; } 
+        }
+    </style>
 </head>
 <body>
 
     <div id="home-screen" class="screen active">
         <h1>SWIPE<br>CHESS</h1>
         <div class="subtitle">Eval Instinct Trainer</div>
-        <div style="background: #1e1e1e; padding: 20px 40px; border-radius: 20px; border: 1px solid #2c2c2e; margin-bottom: 30px;">
+        <div style="background: #1e1e1e; padding: 20px 40px; border-radius: 20px; border: 1px solid #2c2c2e; margin-bottom: 20px;">
             <div style="font-size: 0.7em; color: #888; text-transform: uppercase;">HIGH SCORE</div>
             <div id="home-best-score" style="font-size: 2.5em; font-weight: 800; color: #007aff;">0</div>
         </div>
+        
+        <div class="brag-text">📸 Screenshot me to flex your score</div>
+
         <button id="start-btn" class="btn btn-primary" onclick="startGame()" disabled>LOADING DB...</button>
     </div>
 
@@ -88,7 +109,7 @@
         <h1 style="color: #ff453a;">GAME OVER</h1>
         <div id="game-over-reason" style="margin-bottom:15px; font-weight:600;"></div>
         
-        <div style="background: #1e1e1e; padding: 20px; border-radius: 20px; border: 1px solid #2c2c2e; width: 250px; margin-bottom: 25px;">
+        <div style="background: #1e1e1e; padding: 20px; border-radius: 20px; border: 1px solid #2c2c2e; width: 250px; margin-bottom: 20px;">
             <div style="font-size: 0.7em; color: #888;">FINAL SCORE</div>
             <div id="final-score" style="font-size: 3em; font-weight: 800; color: #007aff; line-height: 1.1;">0</div>
             
@@ -103,6 +124,8 @@
                 </div>
             </div>
         </div>
+
+        <div class="brag-text">📸 Screenshot this to brag with friends</div>
 
         <button class="btn btn-primary" onclick="startGame()">TRY AGAIN</button>
         <button class="btn btn-secondary" onclick="goHome()">HOME</button>
@@ -169,6 +192,10 @@
             document.getElementById('swipe-card').style.transform = 'translateX(0) rotate(0)';
             document.getElementById('swipe-card').style.opacity = '1';
             
+            // Forza reset icone all'avvio partita per prevenire fantasmi
+            document.getElementById('white-king-icon').style.opacity = 0;
+            document.getElementById('black-king-icon').style.opacity = 0;
+            
             updateBestScoreDisplays(); switchScreen('game-screen'); startTimer();
 
             setTimeout(() => {
@@ -183,139 +210,4 @@
             const whiteIcon = document.getElementById('white-king-icon');
             const blackIcon = document.getElementById('black-king-icon');
             
-            card.style.transition = 'none';
-            card.style.transform = 'translateX(0) rotate(0)';
-            card.style.opacity = '1';
-            
-            // FIX FANTASMA: Reset istantaneo icone senza transizione
-            whiteIcon.style.transition = 'none';
-            blackIcon.style.transition = 'none';
-            whiteIcon.style.opacity = 0;
-            blackIcon.style.opacity = 0;
-            
-            if(currentPosIndex >= database.length) { shuffleArray(database); currentPosIndex = 0; }
-            const pos = database[currentPosIndex];
-            
-            const cleanMove = pos.lastMove.replace('-', '').trim();
-            const fromSq = cleanMove.substring(0, 2);
-            const toSq = cleanMove.substring(2, 4);
-            const promo = cleanMove.length > 4 ? cleanMove.substring(4, 5) : undefined;
-            
-            const game = new Chess(pos.fen);
-            const moveResult = game.move({ from: fromSq, to: toSq, promotion: promo });
-            if (moveResult) board.position(game.fen(), false); else board.position(pos.fen, false);
-            
-            document.getElementById('last-move').innerHTML = `Last Move: <b>${fromSq}-${toSq}</b>`;
-            document.getElementById('message').style.opacity = 0;
-            $('.square-55d63').removeClass('highlight-move');
-            $('.square-' + fromSq).addClass('highlight-move');
-            $('.square-' + toSq).addClass('highlight-move');
-            
-            puzzleStartTime = Date.now();
-            
-            setTimeout(() => { 
-                card.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease-out'; 
-                // Riabilita le transizioni per le icone dopo il reset
-                whiteIcon.style.transition = 'opacity 0.2s';
-                blackIcon.style.transition = 'opacity 0.2s';
-            }, 50);
-        }
-        function setupSwipeListeners() {
-            const card = document.getElementById('swipe-card');
-            const whiteIcon = document.getElementById('white-king-icon');
-            const blackIcon = document.getElementById('black-king-icon');
-
-            const onStart = (x) => { if(isProcessingSwipe) return; isDragging = true; startX = x; card.style.transition = 'none'; };
-            const onMove = (x) => {
-                if(!isDragging || isProcessingSwipe) return;
-                currentX = x; let dx = currentX - startX;
-                card.style.transform = `translateX(${dx}px) rotate(${dx * 0.05}deg)`;
-                card.style.opacity = 1 - Math.min(Math.abs(dx) / 150, 0.7);
-                let prog = Math.min(Math.abs(dx) / 100, 1);
-                if(dx > 0) { whiteIcon.style.opacity = prog; whiteIcon.style.transform = `translate(-50%, -50%) scale(${0.5 + prog})`; blackIcon.style.opacity = 0; }
-                else { blackIcon.style.opacity = prog; blackIcon.style.transform = `translate(-50%, -50%) scale(${0.5 + prog})`; whiteIcon.style.opacity = 0; }
-            };
-            const onEnd = () => {
-                if(!isDragging || isProcessingSwipe) return; isDragging = false;
-                let dx = currentX - startX;
-                if(Math.abs(dx) > 80) {
-                    isProcessingSwipe = true;
-                    let guess = dx > 0 ? 'white' : 'black';
-                    card.style.transition = 'all 0.3s ease-in';
-                    card.style.transform = `translateX(${(dx > 0 ? 1 : -1) * window.innerWidth}px) rotate(${(dx > 0 ? 1 : -1) * 30}deg)`;
-                    card.style.opacity = 0;
-                    
-                    // FIX FANTASMA: Azzera subito durante l'uscita della carta
-                    whiteIcon.style.opacity = 0;
-                    blackIcon.style.opacity = 0;
-                    
-                    setTimeout(() => makeGuess(guess), 250);
-                } else {
-                    card.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                    card.style.transform = 'translateX(0) rotate(0)';
-                    card.style.opacity = 1;
-                    whiteIcon.style.opacity = 0; blackIcon.style.opacity = 0;
-                }
-            };
-            card.addEventListener('touchstart', e => onStart(e.touches[0].clientX), {passive:true});
-            card.addEventListener('touchmove', e => { if(e.cancelable) e.preventDefault(); onMove(e.touches[0].clientX); }, {passive:false});
-            card.addEventListener('touchend', onEnd);
-            card.addEventListener('mousedown', e => onStart(e.pageX));
-            window.addEventListener('mousemove', e => onMove(e.pageX));
-            window.addEventListener('mouseup', onEnd);
-        }
-
-        function showFloatingPoints(points) {
-            const floatingEl = document.getElementById('floating-points');
-            floatingEl.innerText = `+${points}`;
-            floatingEl.style.animation = 'none';
-            void floatingEl.offsetWidth; 
-            floatingEl.style.animation = 'floatUp 0.8s ease-out forwards';
-        }
-
-        function makeGuess(guess) {
-            const pos = database[currentPosIndex];
-            const msg = document.getElementById('message');
-            msg.style.opacity = 1;
-            
-            // Calcolo del tempo di reazione (Speed Bonus)
-            let solveTimeInSeconds = (Date.now() - puzzleStartTime) / 1000;
-            
-            if(guess === pos.correctAnswer) {
-                // Calcola punti
-                let speedBonus = Math.max(0, Math.round((8 - solveTimeInSeconds) * 20));
-                let pointsEarned = 100 + speedBonus;
-                
-                score += pointsEarned;
-                streak++;
-                
-                document.getElementById('score').innerText = score;
-                document.getElementById('game-streak').innerText = streak;
-                
-                showFloatingPoints(pointsEarned);
-                
-                msg.innerText = `CORRECT! 🔥`; msg.className = "success";
-                currentPosIndex++;
-                isProcessingSwipe = false;
-                setTimeout(loadPosition, 700);
-            } else {
-                stopTimer();
-                msg.innerText = `WRONG!`; msg.className = "error";
-                
-                if(score > bestScore) { bestScore = score; localStorage.setItem("swipeChessHighScore", bestScore); }
-                
-                setTimeout(() => {
-                    document.getElementById('final-score').innerText = score;
-                    document.getElementById('final-streak').innerText = streak;
-                    document.getElementById('final-time').innerText = formatTime(secondsElapsed);
-                    document.getElementById('game-over-reason').innerText = `Stockfish Eval: ${pos.eval}`;
-                    updateBestScoreDisplays();
-                    switchScreen('game-over-screen');
-                }, 1000);
-            }
-        }
-
-        function goHome() { stopTimer(); updateBestScoreDisplays(); switchScreen('home-screen'); }
-    </script>
-</body>
-</html>
+            card.style.transition = 'none

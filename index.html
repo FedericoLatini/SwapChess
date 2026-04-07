@@ -327,11 +327,33 @@
                 
                 if(score > bestScore) { bestScore = score; localStorage.setItem("swipeChessHighScore", bestScore); }
                 
+                // --- CREAZIONE LINK LICHESS ---
+                // 1. Calcoliamo la posizione esatta che l'utente stava guardando
+                const cleanMove = pos.lastMove.replace('-', '').trim();
+                const fromSq = cleanMove.substring(0, 2);
+                const toSq = cleanMove.substring(2, 4);
+                const promo = cleanMove.length > 4 ? cleanMove.substring(4, 5) : undefined;
+                
+                const gameLink = new Chess(pos.fen);
+                const moveResult = gameLink.move({ from: fromSq, to: toSq, promotion: promo });
+                const finalFen = moveResult ? gameLink.fen() : pos.fen;
+                
+                // 2. Creiamo l'URL di Lichess Analysis (Lichess vuole gli underscore al posto degli spazi nei FEN)
+                const lichessUrl = `https://lichess.org/analysis/standard/${finalFen.replace(/ /g, '_')}`;
+                // ------------------------------
+                
                 setTimeout(() => {
                     document.getElementById('final-score').innerText = score;
                     document.getElementById('final-streak').innerText = streak;
                     document.getElementById('final-time').innerText = formatTime(secondsElapsed);
-                    document.getElementById('game-over-reason').innerText = `Engine Eval: ${pos.eval}`;
+                    
+                    // Inseriamo il link interattivo al posto del testo semplice
+                    document.getElementById('game-over-reason').innerHTML = `
+                        <a href="${lichessUrl}" target="_blank" style="color: #00e5ff; text-decoration: none; border-bottom: 1px dashed #00e5ff; padding-bottom: 2px;">
+                            Engine Eval: ${pos.eval} 🔍 (Analizza)
+                        </a>
+                    `;
+                    
                     updateBestScoreDisplays();
                     switchScreen('game-over-screen');
                 }, 1000);

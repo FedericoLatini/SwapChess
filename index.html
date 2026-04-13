@@ -244,10 +244,11 @@
             board.orientation(currentPerspective);
             
             // Aggiorna il testo e il colore del prompt in base alla prospettiva
-            const colorCode = currentPerspective === 'white' ? '#fff' : '#ff00aa';
-            document.getElementById('game-prompt').innerHTML = `YOU ARE <span style="color:${colorCode}">${currentPerspective}</span>.<br>WOULD YOU SWAP?`;
+            // NUOVO CODICE (UX Perfetta):
+            document.getElementById('game-prompt').innerHTML = `YOU ARE <span style="color:#00e5ff">${currentPerspective}</span>.<br>WOULD YOU SWAP?`;
 
             document.getElementById('last-move').innerHTML = `Last Move: <b>${fromSq}-${toSq}</b>`;
+
             document.getElementById('message').style.opacity = 0;
             
             $('.square-55d63').removeClass('highlight-move');

@@ -180,22 +180,50 @@
 
         function updateBestScoreDisplays() { document.getElementById('home-best-score').innerText = bestScore; }
 
-        function startGame() {
+     function startGame() {
             score = 0; streak = 0; currentPosIndex = 0; isProcessingGuess = false;
             
-            // Smistamento (Facili -> Medie -> Difficili)
-            let easy = [], medium = [], hard = [];
-            database.forEach(pos => {
-                let evalVal = 0;
-                if (typeof pos.eval === 'string' && pos.eval.includes('M')) {
-                    evalVal = 100;
-                } else {
-                    evalVal = Math.abs(parseFloat(pos.eval)); 
+            // --- NUOVA LOGICA: CURVA DI DIFFICOLTÀ PROGRESSIVA FLUIDA ---
+            // Ordina matematicamente tutto il database dal più facile (Matti / +9.0) al più difficile (+0.5)
+            database.sort((a, b) => {
+                // Funzione interna per estrarre il valore assoluto
+                function getEvalVal(pos) {
+                    if (typeof pos.eval === 'string' && pos.eval.includes('M')) return 100; // I Matti sono i più facili
+                    return Math.abs(parseFloat(pos.eval)); 
                 }
-                if (evalVal >= 4.0) easy.push(pos);
-                else if (evalVal >= 1.5) medium.push(pos);
-                else hard.push(pos);
+                
+                let valA = getEvalVal(a);
+                let valB = getEvalVal(b);
+                
+                // Calcola la differenza (ordine decrescente)
+                let difference = valB - valA; 
+                
+                // IL TRUCCO MAGICO: Se due posizioni hanno una difficoltà simile (scarto inferiore a 1.0 pedone)
+                // le mischiamo a caso. Così la sequenza delle partite è sempre diversa ma la difficoltà sale sempre!
+                if (Math.abs(difference) < 1.0) {
+                    return Math.random() - 0.5;
+                }
+                
+                return difference;
             });
+            // --------------------------------------------------------------
+
+            document.getElementById('score').innerText = "0";
+            document.getElementById('game-streak').innerText = "0";
+            document.getElementById('message').innerText = "";
+            document.getElementById('board-container').style.transition = 'none';
+            document.getElementById('board-container').style.opacity = '1';
+            document.getElementById('board-container').style.transform = 'scale(1)';
+
+            updateBestScoreDisplays();
+            switchScreen('game-screen');
+            startTimer();
+            
+            setTimeout(() => {
+                if (!board) board = Chessboard('board', { position: 'start', pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
+                board.resize(); loadPosition();
+            }, 100);
+        }
 
             shuffleArray(easy); shuffleArray(medium); shuffleArray(hard);
             database = [...easy, ...medium, ...hard];
@@ -242,10 +270,6 @@
             
            // Gira la scacchiera!
             board.orientation(currentPerspective);
-            
-            // VECCHIO CODICE:
-            // const colorCode = currentPerspective === 'white' ? '#fff' : '#ff00aa';
-            // document.getElementById('game-prompt').innerHTML = `YOU ARE <span style="color:${colorCode}">${currentPerspective}</span>.<br>WOULD YOU SWAP?`;
             
             // NUOVO CODICE (UX Perfetta):
             document.getElementById('game-prompt').innerHTML = `YOU ARE <span style="color:#00e5ff">${currentPerspective}</span>.<br>WOULD YOU SWAP?`;

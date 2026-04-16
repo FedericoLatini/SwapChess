@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SwapChess</title> <link rel="icon" type="image/png" href="Logo.png">
+    <title>SwapChess</title>
+    
+    <link rel="icon" type="image/png" href="Logo.png">
     <link rel="apple-touch-icon" href="Logo.png">
     <meta name="theme-color" content="#050508">
     
@@ -25,7 +27,6 @@
         .btn-primary:active { transform: scale(0.95); box-shadow: 0 0 10px rgba(255, 0, 170, 0.6); }
         .btn-secondary { background-color: #0c0d14; color: #ff00aa; border: 2px solid #ff00aa; box-shadow: 0 0 15px rgba(255, 0, 170, 0.2) inset; max-width: 280px; }
         
-        /* BOTTONI DI GIOCO AFFIANCATI */
         .action-buttons { display: flex; gap: 15px; width: 100%; max-width: 400px; margin-top: 15px; }
         .btn-game { flex: 1; padding: 18px 10px; font-size: 16px; border-radius: 15px; }
         .btn-keep { background: #0c0d14; color: #00e5ff; border: 2px solid #00e5ff; box-shadow: 0 0 15px rgba(0, 229, 255, 0.2) inset; }
@@ -33,21 +34,16 @@
         .btn-swap { background: #0c0d14; color: #ff00aa; border: 2px solid #ff00aa; box-shadow: 0 0 15px rgba(255, 0, 170, 0.2) inset; }
         .btn-swap:active { transform: scale(0.95); background: #ff00aa; color: #000; }
 
-        /* HUD FLUTTUANTE */
         .stats { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); display: flex; justify-content: space-between; width: 90%; max-width: 400px; font-size: 1em; font-weight: 600; background: rgba(12, 13, 20, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 15px 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border: 1px solid rgba(255, 255, 255, 0.05); z-index: 1000; box-sizing: border-box; }
         .score-box { flex: 1; display: flex; flex-direction: column; align-items: center; }
         .score-box div:first-child { font-size: 0.65em; color: #00e5ff; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1px;}
         .score-box div:last-child { font-size: 1.3em; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
 
         .game-area-wrapper { position: relative; width: 100%; max-width: 400px; margin: 0 auto; height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 60px; }
-        
         #board-container { width: 100%; box-sizing: border-box; background: #0c0d14; border-radius: 12px; padding: 15px; box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 0 1px #1a1c29; z-index: 10; }
         #board { width: 100%; border-radius: 4px; overflow: hidden; pointer-events: none; border: 2px solid #050508; }
-        
-        /* PROMPT TESTUALE */
         #game-prompt { font-size: 1.1em; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; line-height: 1.3; }
 
-        /* PUNTI FLUTTUANTI */
         .points-floating { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #00e5ff; font-weight: 800; font-size: 3.5em; animation: floatUpCenter 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; text-shadow: 0 0 20px rgba(0, 229, 255, 0.8); pointer-events: none; z-index: 500; }
         @keyframes floatUpCenter { 0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); } 20% { transform: translate(-50%, -60%) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, -120px) scale(1); } }
 
@@ -55,7 +51,6 @@
         .success { color: #00e5ff; text-shadow: 0 0 15px rgba(0, 229, 255, 0.6); } 
         .error { color: #ff00aa; text-shadow: 0 0 15px rgba(255, 0, 170, 0.6); }
         .highlight-move { box-shadow: inset 0 0 0 50px rgba(0, 229, 255, 0.3) !important; }
-
         .brag-text { font-size: 0.85em; color: #ff00aa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-weight: 600; text-shadow: 0 0 8px rgba(255, 0, 170, 0.4); animation: pulseText 2s infinite; }
         @keyframes pulseText { 0% { opacity: 0.5; } 50% { opacity: 1; transform: scale(1.02); } 100% { opacity: 0.5; } }
     </style>
@@ -64,55 +59,43 @@
 
     <div id="home-screen" class="screen active">
         <img src="Logo.png" alt="SwapChess Logo" style="width: 130px; height: 130px; border-radius: 30px; margin-bottom: 10px; box-shadow: -15px 0 30px rgba(255, 0, 170, 0.25), 15px 0 30px rgba(0, 229, 255, 0.25);">
-        
         <h1>SWAP<br>CHESS</h1>
         <div class="subtitle">Eval Instinct Trainer</div>
-        
         <div style="background: #0c0d14; padding: 15px 40px; border-radius: 20px; border: 1px solid #1a1c29; margin-bottom: 20px;">
             <div style="font-size: 0.7em; color: #ff00aa; text-transform: uppercase; letter-spacing: 1px;">HIGH SCORE</div>
             <div id="home-best-score" style="font-size: 2.5em; font-weight: 800; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5);">0</div>
         </div>
-        
         <div class="brag-text">📸 Screenshot me to flex</div>
         <button id="start-btn" class="btn btn-primary" onclick="startGame()" disabled>LOADING DB...</button>
     </div>
 
     <div id="game-screen" class="screen">
-        
         <div class="stats">
             <div class="score-box"><div>SCORE</div><div id="score">0</div></div>
             <div class="score-box"><div>TIME</div><div id="timer">00:00</div></div>
             <div class="score-box"><div>STREAK</div><div id="game-streak">0</div></div>
         </div>
-
         <div id="floating-points" class="points-floating"></div>
-
         <div class="game-area-wrapper">
             <div id="board-container">
                 <div id="last-move" style="margin-bottom:10px; color:#888; font-size:0.9em;">Last Move: -</div>
-                
                 <div id="board"></div>
-                
-                <div id="game-prompt">YOU ARE WHITE.<br>WOULD YOU SWAP?</div>
+                <div id="game-prompt">YOU ARE <span style="color:#00e5ff">WHITE</span>.<br>WOULD YOU SWAP?</div>
             </div>
-
             <div class="action-buttons">
                 <button class="btn btn-game btn-keep" onclick="makeGuess('keep')">KEEP IT</button>
                 <button class="btn btn-game btn-swap" onclick="makeGuess('swap')">SWAP COLOR</button>
             </div>
         </div>
-        
         <div id="message"></div>
     </div>
 
     <div id="game-over-screen" class="screen">
         <h1 style="color: #ff00aa; text-shadow: 0 0 20px rgba(255, 0, 170, 0.5);">GAME OVER</h1>
         <div id="game-over-reason" style="margin-bottom:20px; font-weight:600; color: #aaa;"></div>
-        
         <div style="background: #0c0d14; padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid #1a1c29; width: 250px;">
             <div style="font-size: 0.7em; color: #00e5ff; letter-spacing: 1px;">FINAL SCORE</div>
             <div id="final-score" style="font-size: 3.5em; font-weight: 800; color: #fff; text-shadow: 0 0 15px rgba(0,229,255,0.4);">0</div>
-            
             <div style="display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 1px solid #1a1c29;">
                 <div style="text-align: left;">
                     <div style="font-size: 0.6em; color: #ff00aa;">STREAK</div>
@@ -124,9 +107,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="brag-text">📸 Screenshot this to brag</div>
-
         <button class="btn btn-primary" onclick="startGame()">TRY AGAIN</button>
         <button class="btn btn-secondary" onclick="goHome()">HOME</button>
     </div>
@@ -139,14 +119,7 @@
         let database = [], currentPosIndex = 0, score = 0, streak = 0, bestScore = parseInt(localStorage.getItem("swipeChessHighScore")) || 0;
         let board = null, isProcessingGuess = false;
         let timerInterval = null, secondsElapsed = 0, puzzleStartTime = 0;
-        let currentPerspective = 'white'; // Memorizza da che lato stiamo guardando
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
+        let currentPerspective = 'white';
 
         function formatTime(totalSeconds) {
             const m = Math.floor(totalSeconds / 60);
@@ -166,67 +139,44 @@
         function stopTimer() { if (timerInterval) clearInterval(timerInterval); }
 
         async function loadDatabase() {
+            console.log("Tentativo di caricamento database...");
             try {
+                // Sostituisci 'puzzles.json' con il nome esatto del file su GitHub
                 const response = await fetch('./puzzles.json?v=' + Date.now());
+                if (!response.ok) throw new Error("File non trovato");
                 database = await response.json();
+                console.log("Database caricato con successo:", database.length, "posizioni.");
                 document.getElementById('start-btn').innerText = "PLAY NOW";
                 document.getElementById('start-btn').disabled = false;
-            } catch (e) { document.getElementById('start-btn').innerText = "DB ERROR"; }
+            } catch (e) { 
+                console.error("Errore nel caricamento del DB:", e);
+                document.getElementById('start-btn').innerText = "DB ERROR"; 
+            }
         }
 
-        $(document).ready(() => { updateBestScoreDisplays(); loadDatabase(); });
+        $(document).ready(() => { 
+            updateBestScoreDisplays(); 
+            loadDatabase(); 
+        });
 
         function switchScreen(id) { $('.screen').removeClass('active'); $('#' + id).addClass('active'); }
-
         function updateBestScoreDisplays() { document.getElementById('home-best-score').innerText = bestScore; }
 
-     function startGame() {
+        function startGame() {
             score = 0; streak = 0; currentPosIndex = 0; isProcessingGuess = false;
             
-            // --- NUOVA LOGICA: CURVA DI DIFFICOLTÀ PROGRESSIVA FLUIDA ---
-            // Ordina matematicamente tutto il database dal più facile (Matti / +9.0) al più difficile (+0.5)
+            // --- LOGICA DIFFICOLTÀ PROGRESSIVA FLUIDA ---
             database.sort((a, b) => {
-                // Funzione interna per estrarre il valore assoluto
                 function getEvalVal(pos) {
-                    if (typeof pos.eval === 'string' && pos.eval.includes('M')) return 100; // I Matti sono i più facili
+                    if (typeof pos.eval === 'string' && pos.eval.includes('M')) return 100;
                     return Math.abs(parseFloat(pos.eval)); 
                 }
-                
                 let valA = getEvalVal(a);
                 let valB = getEvalVal(b);
-                
-                // Calcola la differenza (ordine decrescente)
-                let difference = valB - valA; 
-                
-                // IL TRUCCO MAGICO: Se due posizioni hanno una difficoltà simile (scarto inferiore a 1.0 pedone)
-                // le mischiamo a caso. Così la sequenza delle partite è sempre diversa ma la difficoltà sale sempre!
-                if (Math.abs(difference) < 1.0) {
-                    return Math.random() - 0.5;
-                }
-                
-                return difference;
+                let diff = valB - valA; // Ordine decrescente (da Matto/+9 a +0.5)
+                if (Math.abs(diff) < 1.0) return Math.random() - 0.5; // Mischia posizioni simili
+                return diff;
             });
-            // --------------------------------------------------------------
-
-            document.getElementById('score').innerText = "0";
-            document.getElementById('game-streak').innerText = "0";
-            document.getElementById('message').innerText = "";
-            document.getElementById('board-container').style.transition = 'none';
-            document.getElementById('board-container').style.opacity = '1';
-            document.getElementById('board-container').style.transform = 'scale(1)';
-
-            updateBestScoreDisplays();
-            switchScreen('game-screen');
-            startTimer();
-            
-            setTimeout(() => {
-                if (!board) board = Chessboard('board', { position: 'start', pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' });
-                board.resize(); loadPosition();
-            }, 100);
-        }
-
-            shuffleArray(easy); shuffleArray(medium); shuffleArray(hard);
-            database = [...easy, ...medium, ...hard];
 
             document.getElementById('score').innerText = "0";
             document.getElementById('game-streak').innerText = "0";
@@ -250,7 +200,7 @@
             container.style.opacity = '1';
             container.style.transform = 'scale(1)';
             
-            if(currentPosIndex >= database.length) { shuffleArray(database); currentPosIndex = 0; }
+            if(currentPosIndex >= database.length) currentPosIndex = 0;
             const pos = database[currentPosIndex];
             
             const cleanMove = pos.lastMove.replace('-', '').trim();
@@ -261,25 +211,19 @@
             const game = new Chess(pos.fen);
             const moveResult = game.move({ from: fromSq, to: toSq, promotion: promo });
             
-            // Chi ha mosso? L'orientamento sarà dalla prospettiva di chi ha APPENA mosso.
-            // game.turn() ci dice di chi è il turno attuale (quindi l'altro ha appena mosso).
             const currentTurn = game.turn(); 
             currentPerspective = currentTurn === 'w' ? 'black' : 'white';
 
             if (moveResult) board.position(game.fen(), false); else board.position(pos.fen, false);
-            
-           // Gira la scacchiera!
             board.orientation(currentPerspective);
             
-            // NUOVO CODICE (UX Perfetta):
-            document.getElementById('game-prompt').innerHTML = `YOU ARE <span style="color:#00e5ff">${currentPerspective}</span>.<br>WOULD YOU SWAP?`;
+            document.getElementById('game-prompt').innerHTML = `YOU ARE <span style="color:#00e5ff">${currentPerspective.toUpperCase()}</span>.<br>WOULD YOU SWAP?`;
             document.getElementById('last-move').innerHTML = `Last Move: <b>${fromSq}-${toSq}</b>`;
             document.getElementById('message').style.opacity = 0;
             
             $('.square-55d63').removeClass('highlight-move');
             $('.square-' + fromSq).addClass('highlight-move');
             $('.square-' + toSq).addClass('highlight-move');
-            
             puzzleStartTime = Date.now();
         }
 
@@ -294,36 +238,25 @@
         function makeGuess(action) {
             if(isProcessingGuess) return;
             isProcessingGuess = true;
-
             const pos = database[currentPosIndex];
             const msg = document.getElementById('message');
             const container = document.getElementById('board-container');
             
-            // Animazione di uscita
             container.style.transition = 'all 0.3s ease-out';
             container.style.opacity = '0';
             container.style.transform = 'scale(0.95)';
-
             msg.style.opacity = 1;
-            let solveTimeInSeconds = (Date.now() - puzzleStartTime) / 1000;
             
-            // Calcolo la logica:
-            // action = 'keep' significa che sceglie il colore della prospettiva attuale.
-            // action = 'swap' significa che sceglie l'altro colore.
+            let solveTimeInSeconds = (Date.now() - puzzleStartTime) / 1000;
             let userGuessedColor = action === 'keep' ? currentPerspective : (currentPerspective === 'white' ? 'black' : 'white');
             
             if(userGuessedColor === pos.correctAnswer) {
                 let speedBonus = Math.max(0, Math.round((30 - solveTimeInSeconds) * 15));
                 let pointsEarned = 100 + speedBonus;
-                
-                score += pointsEarned;
-                streak++;
-                
+                score += pointsEarned; streak++;
                 document.getElementById('score').innerText = score;
                 document.getElementById('game-streak').innerText = streak;
-                
                 showFloatingPoints(pointsEarned);
-                
                 msg.innerText = `CORRECT! 🔥`; msg.className = "success";
                 currentPosIndex++;
                 isProcessingGuess = false;
@@ -331,37 +264,24 @@
             } else {
                 stopTimer();
                 msg.innerText = `WRONG!`; msg.className = "error";
-                
                 if(score > bestScore) { bestScore = score; localStorage.setItem("swipeChessHighScore", bestScore); }
-                
                 const cleanMove = pos.lastMove.replace('-', '').trim();
                 const fromSq = cleanMove.substring(0, 2);
                 const toSq = cleanMove.substring(2, 4);
-                const promo = cleanMove.length > 4 ? cleanMove.substring(4, 5) : undefined;
-                
                 const gameLink = new Chess(pos.fen);
-                const moveResult = gameLink.move({ from: fromSq, to: toSq, promotion: promo });
-                const finalFen = moveResult ? gameLink.fen() : pos.fen;
-                
+                gameLink.move({ from: fromSq, to: toSq });
+                const finalFen = gameLink.fen();
                 const lichessUrl = `https://lichess.org/analysis/standard/${finalFen.replace(/ /g, '_')}`;
-                
                 setTimeout(() => {
                     document.getElementById('final-score').innerText = score;
                     document.getElementById('final-streak').innerText = streak;
                     document.getElementById('final-time').innerText = formatTime(secondsElapsed);
-                    
-                    document.getElementById('game-over-reason').innerHTML = `
-                        <a href="${lichessUrl}" target="_blank" style="color: #00e5ff; text-decoration: none; border-bottom: 1px dashed #00e5ff; padding-bottom: 2px;">
-                            Engine Eval: ${pos.eval} 🔍
-                        </a>
-                    `;
-                    
+                    document.getElementById('game-over-reason').innerHTML = `<a href="${lichessUrl}" target="_blank" style="color: #00e5ff; text-decoration: none; border-bottom: 1px dashed #00e5ff;">Engine Eval: ${pos.eval} 🔍</a>`;
                     updateBestScoreDisplays();
                     switchScreen('game-over-screen');
                 }, 1000);
             }
         }
-
         function goHome() { stopTimer(); updateBestScoreDisplays(); switchScreen('home-screen'); }
     </script>
 </body>
